@@ -1,0 +1,35 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: hello-world-war
+  namespace: default
+  labels:
+    app: hello-world-war
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hello-world-war
+  template:
+    metadata:
+      labels:
+        app: hello-world-war
+    spec:
+      containers:
+      - name: hello-world-war
+        image: 'shlomoshalit/maven_hello_world:1.0'
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: hello-world-war
+  namespace: default
+spec:
+  selector:
+    app: hello-world-war
+  ports:
+  - name: http
+    targetPort: 8080
+    port: 80

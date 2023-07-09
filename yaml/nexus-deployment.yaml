@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nexus
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nexus
+  template:
+    metadata:
+      labels:
+        app: nexus
+    spec:
+      containers:
+        - name: nexus
+          image: sonatype/nexus3
+          ports:
+            - name: httpport
+              containerPort: 8081
+            - name: repoport
+              containerPort: 8811
+          volumeMounts:
+            - mountPath: "/nexus-data"
+              name: nexus-date-pv
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsUser: 0
+      volumes:
+        - name: nexus-date-pv
+          persistentVolumeClaim:
+            claimName: nexus-date-pvc
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: nexus-service
+  namespace: default
+spec:
+  selector:
+    app: nexus
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8081
+    - name: tcp
+      port: 8811
+      targetPort: 8811
+      protocol: TCP
+---
+
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: nexus-date-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
