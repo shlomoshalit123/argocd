@@ -18,9 +18,9 @@ spec:
           image: sonatype/nexus3
           resources:
             limits:
-              cpu: "2"
+              cpu: "4"
             requests:
-              cpu: "2"
+              cpu: "4"
           ports:
             - name: httpport
               containerPort: 8081
