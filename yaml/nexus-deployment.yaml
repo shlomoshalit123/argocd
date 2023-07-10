@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: nexus
-          image: sonatype/nexus3
+          image: sonatype/nexus3:3.56.0
           resources:
             limits:
               cpu: "4"
