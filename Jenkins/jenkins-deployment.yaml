@@ -13,6 +13,7 @@ spec:
       labels:
         app: jenkins-server
     spec:
+      serviceAccountName: jenkins
       containers:
         - name: jenkins
           image: jenkins/jenkins:lts
@@ -48,15 +49,16 @@ spec:
     - name: http
       port: 80
       targetPort: 8080
----
+      
+# ---
 
-kind: PersistentVolumeClaim
-apiVersion: v1
-metadata:
-  name: jenkins-pvc
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 6Gi
+# kind: PersistentVolumeClaim
+# apiVersion: v1
+# metadata:
+#   name: jenkins-pvc
+# spec:
+#   accessModes:
+#     - ReadWriteOnce
+#   resources:
+#     requests:
+#       storage: 6Gi
