@@ -1,17 +1,18 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: prom
+  name: guestbook
   namespace: argocd
 spec:
   project: default
   source:
-    repoURL: https://github.com/prometheus-community/helm-charts.git
+    repoURL: https://github.com/shlomoshalit123/argocd.git
     targetRevision: HEAD
-    path: charts/kube-prometheus-stack
+    path: argocd/prometheus
   destination:
-    server: "https://kubernetes.default.svc"
-    namespace: monitoring
+    server: https://kubernetes.default.svc
+    namespace: default
+
   syncPolicy:
     syncOptions:
     - CreateNamespace=true
