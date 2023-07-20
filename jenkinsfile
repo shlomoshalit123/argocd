@@ -1,0 +1,44 @@
+pipeline {
+    environment {
+        AWS_DEFAULT_REGION='eu-north-1'
+    }
+
+    agent {
+        label 'ubuntu'
+    }
+    
+    parameters {
+        choice(name: 'APPLICATION', choices: ['prometheus', 'DeployCluster', 'RemoveCluster'], description: 'Select action:')
+    }
+
+    stages {
+        stage('checkout') {
+            steps {
+                cleanWs()
+                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/shlomoshalit123/argocd.git']])
+            }
+        }
+
+        // stage('Set application yaml file path') {
+        //     steps {
+        //         withCredentials([usernamePassword(credentialsId: 'AWS-Credentials-IAM', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
+        //             sh '''
+        //             kubectl apply -f argocd-application-prometheus.yaml
+        //             '''
+        //         }
+        //         archiveArtifacts artifacts: "config", followSymlinks: false
+        //     }
+        // }
+
+        stage('Apply argo cd application') {
+            when {equals expected: "prometheus", actual: "${params.APPLICATION}" }
+            steps {
+                sh '''
+                pwd
+                ls -R
+                kubectl apply -f argocd-application-prometheus.yaml
+                '''
+            }
+        }
+    }
+}
