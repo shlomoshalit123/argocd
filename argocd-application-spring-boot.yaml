@@ -1,14 +1,14 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: hello-world
+  name: spring-boot
   namespace: argocd
 spec:
   project: default
   source:
     repoURL: https://github.com/shlomoshalit123/argocd.git
     targetRevision: HEAD
-    path: argocd/module6
+    path: argocd/spring-boot
   destination:
     server: https://kubernetes.default.svc
     namespace: default

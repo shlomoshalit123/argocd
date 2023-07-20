@@ -8,7 +8,7 @@ pipeline {
     }
     
     parameters {
-        choice(name: 'APPLICATION', choices: ['Module6', 'DeployCluster', 'RemoveCluster'], description: 'Select action:')
+        choice(name: 'APPLICATION', choices: ['hello-world', 'spring-boot'], description: 'Select application:')
     }
 
     stages {
@@ -30,13 +30,23 @@ pipeline {
         //     }
         // }
 
-        stage('Apply argo cd application') {
-            when {equals expected: "Module6", actual: "${params.APPLICATION}" }
+        stage('Apply hello-world application') {
+            when {equals expected: "hello-world", actual: "${params.APPLICATION}" }
             steps {
                 sh '''
                 pwd
                 ls -R
-                kubectl apply -f argocd-application-module6.yaml
+                kubectl apply -f argocd-application-hello-world.yaml
+                '''
+            }
+        }
+        stage('Apply argo cd application') {
+            when {equals expected: "spring-boot", actual: "${params.APPLICATION}" }
+            steps {
+                sh '''
+                pwd
+                ls -R
+                kubectl apply -f argocd-application-spring-boot.yaml
                 '''
             }
         }
