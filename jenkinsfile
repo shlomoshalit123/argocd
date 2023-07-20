@@ -8,7 +8,7 @@ pipeline {
     }
     
     parameters {
-        choice(name: 'APPLICATION', choices: ['prometheus', 'DeployCluster', 'RemoveCluster'], description: 'Select action:')
+        choice(name: 'APPLICATION', choices: ['Module6', 'DeployCluster', 'RemoveCluster'], description: 'Select action:')
     }
 
     stages {
@@ -31,12 +31,12 @@ pipeline {
         // }
 
         stage('Apply argo cd application') {
-            when {equals expected: "prometheus", actual: "${params.APPLICATION}" }
+            when {equals expected: "Module6", actual: "${params.APPLICATION}" }
             steps {
                 sh '''
                 pwd
                 ls -R
-                kubectl apply -f argocd-application-prometheus.yaml
+                kubectl apply -f argocd-application-module6.yaml
                 '''
             }
         }

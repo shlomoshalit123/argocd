@@ -1,14 +1,14 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: guestbook
+  name: hello-world
   namespace: argocd
 spec:
   project: default
   source:
     repoURL: https://github.com/shlomoshalit123/argocd.git
     targetRevision: HEAD
-    path: argocd/prometheus
+    path: argocd/module6
   destination:
     server: https://kubernetes.default.svc
     namespace: default
