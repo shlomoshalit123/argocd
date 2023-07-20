@@ -8,7 +8,7 @@ pipeline {
     }
     
     parameters {
-        choice(name: 'APPLICATION', choices: ['hello-world', 'spring-boot'], description: 'Select application:'),
+        choice(name: 'APPLICATION', choices: ['hello-world', 'spring-boot'], description: 'Select application:')
         choice(name: 'ACTION', choices: ['apply', 'delete'], description: 'Select action:')
     }
 
@@ -20,7 +20,7 @@ pipeline {
             }
         }
 
-        stage("Apply ${params.APPLICATION} application") {
+        stage("Apply application") {
             steps {
                 sh """
                 pwd
