@@ -6,7 +6,7 @@ metadata:
   labels:
     app: hello-world-war
 spec:
-  replicas: 1
+  replicas: 4
   selector:
     matchLabels:
       app: hello-world-war
@@ -17,7 +17,9 @@ spec:
     spec:
       containers:
       - name: hello-world-war
-        image: 'shlomoshalit/maven_hello_world:1.0'
+        image: 13.50.194.17:5000/hello-world-war:12
+      imagePullSecrets:
+      - name: regcred
 
 ---
 

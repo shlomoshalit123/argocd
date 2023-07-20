@@ -20,7 +20,7 @@ spec:
             - name: httpport
               containerPort: 8081
             - name: repoport
-              containerPort: 8811
+              containerPort: 5000
           volumeMounts:
             - mountPath: "/nexus-data"
               name: nexus-date-pv
@@ -45,12 +45,20 @@ spec:
     - name: http
       port: 80
       targetPort: 8081
-    - name: tcp
-      port: 8811
-      targetPort: 8811
-      protocol: TCP
 ---
-
+apiVersion: v1
+kind: Service
+metadata:
+  name: nexus-docker-service
+  namespace: default
+spec:
+  selector:
+    app: nexus
+  ports:
+    - name: docker
+      port: 80
+      targetPort: 5000
+---
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:

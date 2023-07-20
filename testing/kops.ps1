@@ -40,23 +40,24 @@ aws iam list-users
 export AWS_ACCESS_KEY_ID=$(aws configure get aws_access_key_id)
 export AWS_SECRET_ACCESS_KEY=$(aws configure get aws_secret_access_key)
 export NAME=shlomishalitkopstest.k8s.local
+export KOPS_STATE_BUCKET_NAME=shlomishalit-kops-state-store
+export KOPS_OIDC_BUCKET_NAME=shlomishalit-kops-oidc-store
 export KOPS_STATE_STORE=s3://${KOPS_STATE_BUCKET_NAME}
 export CONTROL_PLANE_COUINT=1
 export NODE_COUNT=2
-export ZONE=eu-west-1a
+export ZONE=eu-north-1a
 export NODE_SIZE=t3.xlarge
-export KOPS_STATE_BUCKET_NAME=shlomishalit-kopstest-state-store
-export KOPS_OIDC_BUCKET_NAME=shlomishalit-kopstest-oidc-store
+export AMI=ami-08f6cc3063bf16c06
 
 # Create S3 bucket
-aws s3api create-bucket --bucket ${KOPS_STATE_BUCKET_NAME} --region eu-west-1 --create-bucket-configuration LocationConstraint=eu-west-1
+aws s3api create-bucket --bucket ${KOPS_STATE_BUCKET_NAME} --region eu-north-1a --create-bucket-configuration LocationConstraint=eu-north-1a
 
 
 # Enable acls
 aws s3api create-bucket \
     --bucket ${KOPS_OIDC_BUCKET_NAME} \
-    --region eu-west-1 \
-    --object-ownership BucketOwnerPreferred --create-bucket-configuration LocationConstraint=eu-west-1
+    --region eu-north-1a \
+    --object-ownership BucketOwnerPreferred --create-bucket-configuration LocationConstraint=eu-north-1a
 aws s3api put-public-access-block \
     --bucket ${KOPS_OIDC_BUCKET_NAME} \
     --public-access-block-configuration BlockPublicAcls=false,IgnorePublicAcls=false,BlockPublicPolicy=false,RestrictPublicBuckets=false  
@@ -74,7 +75,7 @@ aws s3api put-bucket-encryption --bucket ${KOPS_STATE_BUCKET_NAME} --server-side
 
 
 # Get list of availablility zones
-aws ec2 describe-availability-zones --region eu-west-1
+aws ec2 describe-availability-zones --region eu-north-1a
 
 
 # Create the cluster
@@ -88,9 +89,10 @@ kops create cluster \
 	--node-count ${NODE_COUNT} \
 	--node-size ${NODE_SIZE} \
     --discovery-store=s3://${KOPS_OIDC_BUCKET_NAME}/${NAME}/discovery \
-	--state s3://${KOPS_STATE_BUCKET_NAME}
+	--state s3://${KOPS_STATE_BUCKET_NAME} \
+    --image ${AMI}
 
-
+    
 # Build the cluster
 kops update cluster --name ${NAME} --state s3://${KOPS_STATE_BUCKET_NAME} --yes --admin
 
@@ -109,3 +111,12 @@ kops edit ig master-us-west-2a
 
 kops update cluster --yes
 kops rolling-update cluster
+
+
+kops create secret --name ${NAME} --state s3://${KOPS_STATE_BUCKET_NAME} dockerconfig -f ~/.docker/config.json
+kops rolling-update cluster --name ${NAME} --state s3://${KOPS_STATE_BUCKET_NAME} --yes
+
+
+kubectl create namespace test
+
+kubectl create secret docker-registry regcred --docker-server=http://13.53.36.230:5000 --docker-username=admin --docker-password=Xavi2013 -n test
