@@ -19,17 +19,6 @@ pipeline {
             }
         }
 
-        // stage('Set application yaml file path') {
-        //     steps {
-        //         withCredentials([usernamePassword(credentialsId: 'AWS-Credentials-IAM', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
-        //             sh '''
-        //             kubectl apply -f argocd-application-prometheus.yaml
-        //             '''
-        //         }
-        //         archiveArtifacts artifacts: "config", followSymlinks: false
-        //     }
-        // }
-
         stage('Apply hello-world application') {
             when {equals expected: "hello-world", actual: "${params.APPLICATION}" }
             steps {
@@ -40,7 +29,7 @@ pipeline {
                 '''
             }
         }
-        stage('Apply argo cd application') {
+        stage('Apply spring-boot application') {
             when {equals expected: "spring-boot", actual: "${params.APPLICATION}" }
             steps {
                 sh '''
