@@ -9,6 +9,7 @@ pipeline {
     
     parameters {
         choice(name: 'APPLICATION', choices: ['hello-world', 'spring-boot'], description: 'Select application:')
+        choice(name: 'ACTION', choices: ['apply', 'delete'], description: 'Select action:')
     }
 
     stages {
@@ -19,25 +20,24 @@ pipeline {
             }
         }
 
-        stage('Apply hello-world application') {
-            when {equals expected: "hello-world", actual: "${params.APPLICATION}" }
+        stage("Apply ${params.APPLICATION} application") {
             steps {
-                sh '''
+                sh """
                 pwd
                 ls -R
-                kubectl apply -f argocd-application-hello-world.yaml
-                '''
+                kubectl ${params.ACTION} -f argocd-application-${params.APPLICATION}.yaml
+                """
             }
         }
-        stage('Apply spring-boot application') {
-            when {equals expected: "spring-boot", actual: "${params.APPLICATION}" }
-            steps {
-                sh '''
-                pwd
-                ls -R
-                kubectl apply -f argocd-application-spring-boot.yaml
-                '''
-            }
-        }
+        // stage('Apply spring-boot application') {
+        //     when {equals expected: "spring-boot", actual: "${params.APPLICATION}" }
+        //     steps {
+        //         sh '''
+        //         pwd
+        //         ls -R
+        //         kubectl apply -f argocd-application-spring-boot.yaml
+        //         '''
+        //     }
+        // }
     }
 }
