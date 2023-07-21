@@ -1,12 +1,12 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: hello-world-war-ingress
+  name: spring-boot-ingress
   namespace: default
   annotations:
     kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
-    nginx.ingress.kubernetes.io/rewrite-target: /
+    # nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   rules:
     - http:
@@ -16,5 +16,5 @@ spec:
               name: sprint-boot
               port:
                 number: 80
-          path: '/test'
+          path: /
           pathType: Prefix

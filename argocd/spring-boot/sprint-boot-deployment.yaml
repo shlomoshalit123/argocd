@@ -16,15 +16,30 @@ spec:
         app: sprint-boot
     spec:
       containers:
-      - name: sprint-boot-backend
-        image: 13.50.194.17:5000/sprint-boot_backend:45
-      - name: sprint-boot-db
-        image: 13.50.194.17:5000/sprint-boot_db:45
-      - name: sprint-boot-frontend
-        image: 13.50.194.17:5000/sprint-boot_frontend:45
+        - name: sprint-boot-db
+          image: 13.50.194.17:5000/sprint-boot_db:5
+          ports:
+          - containerPort: 3306
+          env:
+            - name: MARIADB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysecret
+                  key: password
+            - name: MYSQL_DATABASE
+              value: example
+            - name: MYSQL_USER
+              value: root
+        - name: sprint-boot-frontend
+          image: 13.50.194.17:5000/sprint-boot_frontend:5
+          ports:
+          - containerPort: 3000
+        - name: sprint-boot-backend
+          image: 13.50.194.17:5000/sprint-boot_backend:5
+          ports:
+          - containerPort: 8080
       imagePullSecrets:
       - name: regcred
-
 ---
 
 apiVersion: v1
@@ -39,3 +54,26 @@ spec:
   - name: http
     targetPort: 3000
     port: 80
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: db
+  namespace: default
+spec:
+  selector:
+    app: sprint-boot
+  ports:
+  - name: tcp
+    targetPort: 3306
+    port: 3306
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mysecret
+type: Opaque
+data:
+  password: ZGItNTd4c2w=
