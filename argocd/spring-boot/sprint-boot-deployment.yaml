@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: sprint-boot-db
-          image: 13.50.194.17:5000/sprint-boot_db:3
+          image: 13.50.194.17:5000/sprint-boot_db:4
           ports:
           - containerPort: 3306
           env:
@@ -31,11 +31,11 @@ spec:
             - name: MYSQL_USER
               value: root
         - name: sprint-boot-frontend
-          image: 13.50.194.17:5000/sprint-boot_frontend:3
+          image: 13.50.194.17:5000/sprint-boot_frontend:4
           ports:
           - containerPort: 3000
         - name: sprint-boot-backend
-          image: 13.50.194.17:5000/sprint-boot_backend:3
+          image: 13.50.194.17:5000/sprint-boot_backend:4
           ports:
           - containerPort: 8080
       imagePullSecrets:
